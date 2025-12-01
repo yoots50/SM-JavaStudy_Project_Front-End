@@ -1,0 +1,135 @@
+.contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 64px;
+    color: #214597;
+    margin-bottom: 24px;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: #0000008C;
+}
+
+.error_msg {
+    font-size: 24px;
+    color: #0000008C;
+}
+
+.banner {
+    border: 1px solid #CCCCCC;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 593px;
+    max-width: 1200px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 16px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bg {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    opacity: 0.3;
+}
+
+.basic_input {
+    width: 70%;
+    height: 50px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    padding: 0 16px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input_area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    gap: 16px;
+    width: 100%;
+    max-width: 700px;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.enter_button {
+    width: 30%;
+    height: 50px;
+    background-color: #214597;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.enter_button:hover {
+    background-color: #1b357a;
+}
+
+.fade_in {
+    animation: fade_in 1s ease-in-out;
+}
+
+@keyframes fade_in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .banner {
+        max-width: 700px;
+        max-height: 400px;
+    }
+
+    .input_area {
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 720px) {
+    .banner {
+        max-width: 500px;
+        max-height: 200px;
+    }
+    .title {
+        font-size: 32px;
+    }
+    .subtitle {
+        font-size: 16px;
+    }
+    .input_area {
+        max-width: 400px;
+    }
+    .error_msg {
+        font-size: 14px;
+    }
+}

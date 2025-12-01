@@ -1,0 +1,79 @@
+.header {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 20px;
+  color: #fff;
+  font-family: Inter;
+  padding: 16px;
+}
+.navbar {
+  flex: 1;
+  backdrop-filter: blur(70px);
+  border-radius: 16px;
+  background-color: #214597;
+  display: flex;
+  align-items: center;
+  padding: 8px 8px 8px 16px;
+  box-sizing: border-box;
+  max-width: 1000px;
+  max-height: 70px;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    margin-right: 8px;
+}
+.logo:hover {
+    cursor: pointer;
+}
+.site_name {
+    font-size: 24px;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+.nickname {
+    display: inline-block;
+    font-size: 18px;
+    color: #FFFFFF;
+}
+.logout {
+    width: 80px;
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 1200px) {
+  .navbar {
+    max-height: 40px;
+  }
+
+  .site_name{
+    font-size: 15px;
+  }
+
+  .nickname {
+    font-size: 12px;
+  }
+
+  .logout {
+    font-size: 12px;
+  }
+}

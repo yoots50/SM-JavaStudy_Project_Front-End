@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 
+import styles from "./Chat.module.css";
+import { useNavigate } from "react-router-dom";
+
 export default function Chat() {
+  const navigate = useNavigate();
   const [chats, setChats] = useState([]); // 유저가 입력할 채팅 내용
   const [value, setValue] = useState(""); // 입력창의 값
   const [users, setUsers] = useState([]); // 접속한 유저 리스트
@@ -25,6 +29,13 @@ export default function Chat() {
     // send할 destination은 "/app/send/messages"로 할 것
     setValue(""); // 전송 후 입력창을 비우는 로직
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("nickname") === null) {
+      navigate("/", { replace: true });
+    }
+  }, []);
+
   useEffect(() => {
     // !!!!! 코드 작성하는 곳 !!!!!
     // useEffect안에 통해 서버와 연결하고 연결을 끊는 로직 작성
@@ -45,19 +56,61 @@ export default function Chat() {
     // ENTER, LEAVE 메시지를 send할 destination은 "/app/send/users"로 할 것
   }, []);
 
+  useEffect(() => {
+    // !!!!! TEST 코드, 릴리즈 시 삭제할 것 !!!!
+    setChats((prev) => {
+      for (let i = 0; i < 10; i++) {
+        prev.push("Hello world " + i);
+      }
+      return [...prev];
+    });
+    setUsers((prev) => {
+      for (let i = 0; i < 5; i++) {
+        prev.push("User " + i);
+      }
+      return [...prev];
+    });
+  }, []);
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.contents}>
+      <div className={styles.container}>
+        <div className={styles.blank}></div>
+        <div className={styles.chat_area}>
+          <img src="../img/chat-background.png" className={styles.chat_logo} />
+          <div className={styles.chat}>
+            {chats &&
+              chats.map((chat) => (
+                <h1 className={styles.msg_box}>{chat}</h1>
+              ))}{" "}
+            {/* 채팅 내용 */}
+          </div>
+        </div>
+        <div className={styles.users}>
+          {users &&
+            users.map((user) => (
+              <h1 className={styles.msg_box}>{user}</h1>
+            ))}{" "}
+          {/* 접속한 유저 리스트 */}
+        </div>
+      </div>
+      <div className={styles.input_area}>
         <input
           placeholder="type message here"
           type="text"
           value={value}
           onChange={handleChange}
+          className={styles.basic_input}
         />
-        <button>send</button>
-      </form>
-      {users && users.map((user) => <h1>{user}</h1>)} {/* 접속한 유저 리스트 */}
-      {chats && chats.map((chat) => <h1>{chat}</h1>)} {/* 채팅 내용 */}
-    </div>
+        <button className={styles.enter_button}>send</button>
+      </div>
+      <div className={styles.users_under}>
+          {users &&
+            users.map((user) => (
+              <h1 className={styles.msg_box}>{user}</h1>
+            ))}{" "}
+          {/* 접속한 유저 리스트 */}
+        </div>
+    </form>
   );
 }
