@@ -13,46 +13,78 @@ export default function Chat() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault(); // 폼 제출 시 새로고침 방지
-    // !!!!! 코드 작성하는 곳 !!!!!
-    // 메세지를 서버로 전송하는 로직을 작성할 것
-    // 전송할 때는 stompClientRef.current.send를 사용할 것
-    // 전송할 때의 형식은 ChatDTO 형태로 보낼 것 {type, message, nickname}
-    // type은 MESSAGE, message는 유저가 입력한 값, nickname은 유저의 닉네임
-    // 예시)
-    // const msgToSend = {type: "MESSAGE", message: value, nickname: nickname};
-    // messageType는 MESSAGE로 할 것
-    // send할 때는 JSON.stringify(msgToSend)를 사용할 것
-    // send할 destination은 "/app/send/messages"로 할 것
+    const msgToSend = {
+      type: "MESSAGE",
+      message: value,
+      nickname: nickname,
+    };
+    stompClientRef.current.send(
+      "/app/send/messages",
+      {},
+      JSON.stringify(msgToSend)
+    );
     setValue(""); // 전송 후 입력창을 비우는 로직
   };
   useEffect(() => {
-    // !!!!! 코드 작성하는 곳 !!!!!
-    // useEffect안에 통해 서버와 연결하고 연결을 끊는 로직 작성
-    // 서버와 연결할 시 messageType를 ENTER로 하는 ChatDTO 전송
-    // 서버와 연결이 끊어질 시 messageType를 LEAVE로 하는 chatDTO 전송
-    // stompClientRef.current를 통해 stompClient에 접근 가능
-    // 서버와 연결할 땐 stompClientRef.current.connect({}, onConnected, onError);을 사용
-    // 연결이 끊어질 땐 stompClientRef.current.disconnect();를 사용
-    // onConnected 함수 안에서 "/topic/messages"와 "/topic/users"를 구독하고
-    // 구독한 후 "/topic/messages"로부터 메세지를 받으면 chat 상태를 업데이트
-    // "/topic/users"로부터 유저 리스트를 받으면 users 상태를 업데이트
-    // onConnected 함수가 실행되면 서버로 ENTER 메시지를 전송
-    // 구독은 stompClientRef.current.subscribe을 사용
-    // 메시지를 전송할 때는 JSON.stringify(msgToSend)를 사용
-    // 메시지를 받을 때는 JSON.parse(message.body)를 사용
-    // disconnect 함수는 useEffect가 return할 때 작성
-    // disconnect 함수를 쓰기 전 서버로 LEAVE 메시지를 전송
-    // ENTER, LEAVE 메시지를 send할 destination은 "/app/send/users"로 할 것
+    const socket = new SockJS("http://localhost:8080/ws");
+    const client = over(socket);
+    stompClientRef.current = client;
+
+    const onConnected = () => {
+      const stompClient = stompClientRef.current;
+      const enterMsg = {
+        type: "ENTER",
+        message: `${nickname}님이 입장하셨습니다.`,
+        nickname: nickname,
+      };
+      if (stompClient.current) {
+        stompClient.subscribe("/topic/messages", (message) => {
+          const received = JSON.parse(message.body);
+          setChats((prev) => [
+            ...prev,
+            `${received.nickname}: ${received.message}`,
+          ]);
+        });
+
+        stompClient.subscribe("/topic/users", (message) => {
+          const userList = JSON.parse(message.body);
+          setUsers(userList);
+        });
+
+        client.send("/app/send/users", {}, JSON.stringify(enterMsg));
+        client.send("/app/send/messages", {}, JSON.stringify(enterMsg));
+      }
+    };
+
+    const onError = (error) => {
+      console.error("WebSocket connection error:", error);
+    };
+
+    client.connect({}, onConnected, onError);
+
+    return () => {
+      if (stompClientRef.current) {
+        const leaveMsg = {
+          type: "LEAVE",
+          message: `${nickname}님이 퇴장하셨습니다.`,
+          nickname: nickname,
+        };
+        stompClientRef.current.send(
+          "/app/send/users",
+          {},
+          JSON.stringify(leaveMsg)
+        );
+        stompClientRef.current.disconnect();
+      }
+    };
   }, []);
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          placeholder="type message here"
-          type="text"
-          value={value}
-          onChange={handleChange}
+        <input></input>
+        placeholder="type message here" type="text" value={value}
+        onChange={handleChange}
         />
         <button>send</button>
       </form>
