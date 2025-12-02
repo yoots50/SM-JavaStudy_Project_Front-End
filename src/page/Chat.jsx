@@ -112,7 +112,7 @@ export default function Chat() {
       <div className={styles.container}>
         <div className={styles.blank}></div>
         <div className={styles.chat_area}>
-          <img src="../img/chat-background.png" className={styles.chat_logo} />
+          <img src="../img/chat-background.png" className={styles.chat_logo} alt=""/>
           <div className={styles.chat}>
             {chats &&
               chats.map((chat) => <h1 className={styles.msg_box}>{chat}</h1>)}

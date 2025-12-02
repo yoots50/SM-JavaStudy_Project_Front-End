@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className={styles.contents}>
       <div className={`${styles.banner} ${styles.fade_in}`}>
-        <img src="../img/sm-bg.jpg" className={styles.bg} />
+        <img src="../img/sm-bg.jpg" className={styles.bg} alt=""/>
         <h2 className={styles.title}>SM-Chat</h2>
         <h3 className={styles.subtitle}>
           상명대학교 객체지향프로그래밍 팀 프로젝트
