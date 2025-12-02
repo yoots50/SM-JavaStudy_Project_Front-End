@@ -1,4 +1,4 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 
@@ -21,6 +21,7 @@ export default function Chat() {
       type: "MESSAGE",
       message: value,
       nickname: nickname,
+      date: null,
     };
     stompClientRef.current.send(
       "/app/send/messages",
@@ -37,7 +38,9 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(
+      `http://${process.env.REACT_APP_SERVER_IP}:8080/ws`
+    );
     const client = over(socket);
     stompClientRef.current = client;
 
@@ -47,14 +50,22 @@ export default function Chat() {
         type: "ENTER",
         message: `${nickname}님이 입장하셨습니다.`,
         nickname: nickname,
+        date: null,
       };
-      if (stompClient.current) {
+      if (stompClient) {
         stompClient.subscribe("/topic/messages", (message) => {
           const received = JSON.parse(message.body);
-          setChats((prev) => [
-            ...prev,
-            `${received.nickname}: ${received.message}`,
-          ]);
+          var chatMessage = "";
+          if (received.type === "ENTER" || received.type === "LEAVE") {
+            chatMessage = received.message;
+          } else if (received.type === "MESSAGE") {
+            chatMessage = `${received.nickname} : ${received.message}`;
+          } else {
+            chatMessage = "unknown message type";
+          }
+
+          setChats((prev) => [...prev, `${chatMessage}`]);
+          console.log(received);
         });
 
         stompClient.subscribe("/topic/users", (message) => {
@@ -79,31 +90,21 @@ export default function Chat() {
           type: "LEAVE",
           message: `${nickname}님이 퇴장하셨습니다.`,
           nickname: nickname,
+          date: null,
         };
         stompClientRef.current.send(
           "/app/send/users",
           {},
           JSON.stringify(leaveMsg)
         );
+        stompClientRef.current.send(
+          "/app/send/messages",
+          {},
+          JSON.stringify(leaveMsg)
+        );
         stompClientRef.current.disconnect();
       }
     };
-  }, []);
-
-  useEffect(() => {
-    // !!!!! TEST 코드, 릴리즈 시 삭제할 것 !!!!
-    setChats((prev) => {
-      for (let i = 0; i < 10; i++) {
-        prev.push("Hello world " + i);
-      }
-      return [...prev];
-    });
-    setUsers((prev) => {
-      for (let i = 0; i < 5; i++) {
-        prev.push("User " + i);
-      }
-      return [...prev];
-    });
   }, []);
 
   return (
@@ -114,18 +115,12 @@ export default function Chat() {
           <img src="../img/chat-background.png" className={styles.chat_logo} />
           <div className={styles.chat}>
             {chats &&
-              chats.map((chat) => (
-                <h1 className={styles.msg_box}>{chat}</h1>
-              ))}{" "}
-            {/* 채팅 내용 */}
+              chats.map((chat) => <h1 className={styles.msg_box}>{chat}</h1>)}
           </div>
         </div>
         <div className={styles.users}>
           {users &&
-            users.map((user) => (
-              <h1 className={styles.msg_box}>{user}</h1>
-            ))}{" "}
-          {/* 접속한 유저 리스트 */}
+            users.map((user) => <h1 className={styles.msg_box}>{user}</h1>)}
         </div>
       </div>
       <div className={styles.input_area}>
@@ -139,12 +134,9 @@ export default function Chat() {
         <button className={styles.enter_button}>send</button>
       </div>
       <div className={styles.users_under}>
-          {users &&
-            users.map((user) => (
-              <h1 className={styles.msg_box}>{user}</h1>
-            ))}{" "}
-          {/* 접속한 유저 리스트 */}
-        </div>
+        {users &&
+          users.map((user) => <h1 className={styles.msg_box}>{user}</h1>)}
+      </div>
     </form>
   );
 }
