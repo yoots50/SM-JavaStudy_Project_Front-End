@@ -25,7 +25,6 @@ export default function Home() {
       navigate("/chat");
     }
   };
-  const location = useLocation();
   return (
     <div className={styles.contents}>
       <div className={`${styles.banner} ${styles.fade_in}`}>
@@ -35,14 +34,6 @@ export default function Home() {
           상명대학교 객체지향프로그래밍 팀 프로젝트
         </h3>
       </div>
-      <button
-        onClick={() => {
-          localStorage.setItem("nickname", "DEV");
-          navigate("/chat");
-        }}
-      >
-        DEV {/* TEST용 버튼, 릴리즈 시 삭제할 것 */}
-      </button>
       <form onSubmit={handleSubmit}>
         <div className={styles.input_area}>
           {localStorage.getItem("nickname") === null ? (
