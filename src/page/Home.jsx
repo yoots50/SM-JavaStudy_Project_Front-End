@@ -1,15 +1,16 @@
 import React, { use, useEffect, useState } from "react";
-import { nicknameCheck } from "../api/server";
+import { auth, nicknameCheck } from "../api/server";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./Home.module.css";
 
 export default function Home() {
-  const [value, setValue] = useState("");
+  const [formData, setformData] = useState({id:"", pw:""});
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
   const handleChange = (e) => {
-    setValue(e.target.value);
+    const { name, value } = e.target;
+    setformData({ ...formData, [name]: value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,18 +18,24 @@ export default function Home() {
       navigate("/chat");
       return;
     }
-    const result = await nicknameCheck(value);
+    console.log("value",formData);
+    const result = await auth(formData);
+    console.log(result);
     if (result.name === "AxiosError") {
-      setMsg("서버와의 연결 시간이 초과되었습니다. 다시 시도해주세요.");
+      if (result.response === undefined) {
+        setMsg("서버와의 연결 시간이 초과되었습니다. 다시 시도해주세요.");
+      } else {
+        setMsg(result.response.data);
+      }
     } else {
-      localStorage.setItem("nickname", result.nickname);
+      localStorage.setItem("nickname", result.username + " " + result.name);
       navigate("/chat");
     }
   };
   return (
     <div className={styles.contents}>
       <div className={`${styles.banner} ${styles.fade_in}`}>
-        <img src="../img/sm-bg.jpg" className={styles.bg} alt=""/>
+        <img src="../img/sm-bg.jpg" className={styles.bg} alt="" />
         <h2 className={styles.title}>SM-Chat</h2>
         <h3 className={styles.subtitle}>
           상명대학교 객체지향프로그래밍 팀 프로젝트
@@ -37,14 +44,26 @@ export default function Home() {
       <form onSubmit={handleSubmit}>
         <div className={styles.input_area}>
           {localStorage.getItem("nickname") === null ? (
-            <input
-              placeholder="여기에 닉네임 입력"
-              type="text"
-              required={true}
-              value={value}
-              onChange={handleChange}
-              className={styles.basic_input}
-            />
+            <div>
+              <input
+                placeholder="id"
+                type="text"
+                required={true}
+                value={formData.id}
+                onChange={handleChange}
+                className={styles.basic_input}
+                name="id"
+              />
+              <input
+                placeholder="pw"
+                type="text"
+                required={true}
+                value={formData.pw}
+                onChange={handleChange}
+                className={styles.basic_input}
+                name="pw"
+              />
+            </div>
           ) : null}
           <button className={styles.enter_button}>접속</button>
         </div>
