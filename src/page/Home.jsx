@@ -56,7 +56,7 @@ export default function Home() {
               />
               <input
                 placeholder="pw"
-                type="text"
+                type = "password"
                 required={true}
                 value={formData.pw}
                 onChange={handleChange}
