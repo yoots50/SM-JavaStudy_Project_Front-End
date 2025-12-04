@@ -44,7 +44,7 @@ export default function Home() {
       <form onSubmit={handleSubmit}>
         <div className={styles.input_area}>
           {localStorage.getItem("nickname") === null ? (
-            <div>
+            <div className={styles.input_box}>
               <input
                 placeholder="id"
                 type="text"

@@ -48,8 +48,8 @@
 }
 
 .basic_input {
-    width: 70%;
-    height: 50px;
+    width: 100%;
+    height: 40px;
     border: 1px solid #CCCCCC;
     border-radius: 8px;
     padding: 0 16px;
@@ -62,9 +62,16 @@
     align-items: center;
     justify-content: center;
     margin-top: 50px;
-    gap: 16px;
+    gap: 10px;
     width: 100%;
-    max-width: 700px;
+    max-width: 500px;
+}
+
+.input_box {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 5px;
 }
 
 form {
@@ -76,13 +83,13 @@ form {
 }
 
 .enter_button {
-    width: 30%;
-    height: 50px;
+    width: 90px;
+    height: 85px;
     background-color: #214597;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
     padding: 0;
 }
