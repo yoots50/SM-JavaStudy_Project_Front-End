@@ -27,6 +27,13 @@ export default function Chat() {
     setValue(""); // 전송 후 입력창을 비우는 로직
   };
 
+  const autoScrollToBottom = () => {
+    const chat = document.querySelector(`.${styles.chat}`);
+    if (chat.scrollTop === chat.scrollHeight) {
+      chat.scrollTop = chat.scrollHeight;
+    }
+  };
+
   useEffect(() => {
     if (localStorage.getItem("nickname") === null) {
       window.location.href = '/';
@@ -40,6 +47,7 @@ export default function Chat() {
       setstompClient: (client) => {
         stompClientRef.current = client;
       },
+      chatDiv: document.querySelector(`.${styles.chat}`),
     });
 
     return () => {
@@ -48,7 +56,7 @@ export default function Chat() {
       });
     };
   }, []);
-
+  console.log(`.${styles.chat}`);
   return (
     <form onSubmit={handleSubmit} className={styles.contents}>
       <div className={styles.container}>
