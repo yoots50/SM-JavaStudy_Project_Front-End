@@ -4,6 +4,16 @@
 <img width="819" height="617" alt="image" src="https://github.com/user-attachments/assets/8b366ab4-7911-489f-bc2c-fbbbdcb456a5" />
 </div>
 
+# 실행 할 시 주의할 점
+코드 내의 서버 주소가 .env 파일을 통한 환경변수로 지정되어 있기에 백엔드 서버를 실행하는 서버 컴퓨터의 IP를 환경변수로 지정해야만 함</br>
+예시 코드)
+```env
+//.env 파일
+REACT_APP_SERVER_IP="여기에 서버 IP 입력"
+
+```
+
+
 # Language
 <img src="https://img.shields.io/badge/javascript-%23F7DF1E.svg?&style=for-the-badge&logo=javascript&logoColor=black" />	<img src="https://img.shields.io/badge/html5-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white" /> <img src="https://img.shields.io/badge/css3-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white" />
 
