@@ -13,7 +13,12 @@ export async function auth(value) {
 
 let stompClient = null;
 
-export async function connectWebSocket({ setChats, setUsers, setstompClient, chatDiv }) {
+export async function connectWebSocket({
+  setChats,
+  setUsers,
+  setstompClient,
+  autoScrollToBottom,
+}) {
   const nickname = localStorage.getItem("nickname"); // 유저가 입력한 닉네임
   const socket = new SockJS(
     `http://${process.env.REACT_APP_SERVER_IP}:8080/ws`
@@ -30,7 +35,7 @@ export async function connectWebSocket({ setChats, setUsers, setstompClient, cha
     if (stompClient) {
       stompClient.subscribe("/topic/messages", (message) => {
         const received = JSON.parse(message.body);
-        
+
         var chatMessage = "";
         if (received.type === "ENTER" || received.type === "LEAVE") {
           chatMessage = received.message;
@@ -40,9 +45,7 @@ export async function connectWebSocket({ setChats, setUsers, setstompClient, cha
           chatMessage = "unknown message type";
         }
         setChats((prev) => [...prev, `${chatMessage}`]);
-        setTimeout(() => {
-          chatDiv.scrollTop = chatDiv.scrollHeight;
-        }, 1);
+        autoScrollToBottom();
       });
 
       stompClient.subscribe("/topic/users", (message) => {
@@ -83,9 +86,5 @@ export async function sendMessage({ value, nickname }) {
     nickname: nickname,
     date: null,
   };
-  stompClient.send(
-    "/app/send/messages",
-    {},
-    JSON.stringify(msgToSend)
-  );
+  stompClient.send("/app/send/messages", {}, JSON.stringify(msgToSend));
 }

@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import SockJS from "sockjs-client";
-import { over } from "stompjs";
-
 import styles from "./Chat.module.css";
-import { useNavigate } from "react-router-dom";
 import {
   connectWebSocket,
   disconnectWebSocket,
@@ -11,7 +7,6 @@ import {
 } from "../api/server";
 
 export default function Chat() {
-  const navigate = useNavigate();
   const [chats, setChats] = useState([]); // 유저가 입력할 채팅 내용
   const [value, setValue] = useState(""); // 입력창의 값
   const [users, setUsers] = useState([]); // 접속한 유저 리스트
@@ -28,15 +23,20 @@ export default function Chat() {
   };
 
   const autoScrollToBottom = () => {
-    const chat = document.querySelector(`.${styles.chat}`);
-    if (chat.scrollTop === chat.scrollHeight) {
-      chat.scrollTop = chat.scrollHeight;
-    }
+    const chatScroll = document.querySelector(`.${styles.chat}`);
+    if (
+      chatScroll.scrollTop >=
+      chatScroll.scrollHeight - chatScroll.clientHeight
+    )
+      setTimeout(() => {
+        chatScroll.scrollTop =
+          chatScroll.scrollHeight - chatScroll.clientHeight;
+      }, 1);
   };
 
   useEffect(() => {
     if (localStorage.getItem("nickname") === null) {
-      window.location.href = '/';
+      window.location.href = "/";
     }
   }, []);
 
@@ -47,7 +47,8 @@ export default function Chat() {
       setstompClient: (client) => {
         stompClientRef.current = client;
       },
-      chatDiv: document.querySelector(`.${styles.chat}`),
+      autoScrollToBottom,
+      chatScroll: document.querySelector(`.${styles.chat}`),
     });
 
     return () => {
@@ -56,7 +57,6 @@ export default function Chat() {
       });
     };
   }, []);
-  console.log(`.${styles.chat}`);
   return (
     <form onSubmit={handleSubmit} className={styles.contents}>
       <div className={styles.container}>

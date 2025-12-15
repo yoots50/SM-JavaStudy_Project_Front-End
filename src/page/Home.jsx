@@ -1,6 +1,6 @@
-import React, { use, useEffect, useState } from "react";
-import { auth, nicknameCheck } from "../api/server";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { auth } from "../api/server";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./Home.module.css";
 
@@ -18,9 +18,8 @@ export default function Home() {
       navigate("/chat");
       return;
     }
-    console.log("value",formData);
+    setMsg("접속중...")
     const result = await auth(formData);
-    console.log(result);
     if (result.name === "AxiosError") {
       if (result.response === undefined) {
         setMsg("서버와의 연결 시간이 초과되었습니다. 다시 시도해주세요.");
