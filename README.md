@@ -13,3 +13,9 @@
 # Tools
 <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?&style=for-the-badge&logo=figma&logoColor=white" /> <img src="https://img.shields.io/badge/visual%20studio%20code-%23007ACC.svg?&style=for-the-badge&logo=visual%20studio%20code&logoColor=white" /> <img src="https://img.shields.io/badge/postcss-%23DD3A0A.svg?&style=for-the-badge&logo=postcss&logoColor=white" /> <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
 
+# 패치노트
+
+## v1.1
+- 오토스크롤이 이전 스크롤의 위치가 맨 밑이였을 때만 작동하게 함
+- 불필요한 console.log 제거
+- 불필요한 import문 제거
